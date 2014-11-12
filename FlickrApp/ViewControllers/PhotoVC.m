@@ -7,7 +7,6 @@
 //
 
 #import "PhotoVC.h"
-#import "YPRSSItem.h"
 
 @interface PhotoVC ()
 {

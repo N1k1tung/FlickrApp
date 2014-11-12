@@ -22,8 +22,11 @@
 		0CE45BEE1A135AD700BB8612 /* PhotoImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BEA1A135AD700BB8612 /* PhotoImageView.m */; };
 		0CE45BEF1A135AD700BB8612 /* ThumbCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BEC1A135AD700BB8612 /* ThumbCell.m */; };
 		0CE45BF31A135D8000BB8612 /* ImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BF21A135D8000BB8612 /* ImageCache.m */; };
-		0CE45BF71A13632100BB8612 /* FlickrWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BF61A13632100BB8612 /* FlickrWrapper.m */; };
 		0CE45BF91A1364B300BB8612 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CE45BF81A1364B300BB8612 /* SDWebImage.framework */; };
+		0CE45BFC1A13797600BB8612 /* Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BFB1A13797600BB8612 /* Configuration.m */; };
+		0CE45BFE1A13799600BB8612 /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0CE45BFD1A13799600BB8612 /* Configuration.plist */; };
+		0CE45C011A137F4700BB8612 /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45C001A137F4700BB8612 /* NetworkManager.m */; };
+		0CE45C071A1396F600BB8612 /* FlickrRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45C061A1396F600BB8612 /* FlickrRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,9 +55,14 @@
 		0CE45BEC1A135AD700BB8612 /* ThumbCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbCell.m; sourceTree = "<group>"; };
 		0CE45BF11A135D8000BB8612 /* ImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCache.h; sourceTree = "<group>"; };
 		0CE45BF21A135D8000BB8612 /* ImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCache.m; sourceTree = "<group>"; };
-		0CE45BF51A13632100BB8612 /* FlickrWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrWrapper.h; sourceTree = "<group>"; };
-		0CE45BF61A13632100BB8612 /* FlickrWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrWrapper.m; sourceTree = "<group>"; };
 		0CE45BF81A1364B300BB8612 /* SDWebImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = "<group>"; };
+		0CE45BFA1A13797600BB8612 /* Configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Configuration.h; sourceTree = "<group>"; };
+		0CE45BFB1A13797600BB8612 /* Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Configuration.m; sourceTree = "<group>"; };
+		0CE45BFD1A13799600BB8612 /* Configuration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configuration.plist; sourceTree = "<group>"; };
+		0CE45BFF1A137F4700BB8612 /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
+		0CE45C001A137F4700BB8612 /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
+		0CE45C051A1396F600BB8612 /* FlickrRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrRequest.h; sourceTree = "<group>"; };
+		0CE45C061A1396F600BB8612 /* FlickrRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +123,8 @@
 				0CE45BC41A1352E900BB8612 /* Main.storyboard */,
 				0CE45BC71A1352E900BB8612 /* Images.xcassets */,
 				0CE45BB91A1352E900BB8612 /* Supporting Files */,
+				0CE45BFA1A13797600BB8612 /* Configuration.h */,
+				0CE45BFB1A13797600BB8612 /* Configuration.m */,
 			);
 			path = FlickrApp;
 			sourceTree = "<group>";
@@ -124,6 +134,7 @@
 			children = (
 				0CE45BBA1A1352E900BB8612 /* Info.plist */,
 				0CE45BBB1A1352E900BB8612 /* main.m */,
+				0CE45BFD1A13799600BB8612 /* Configuration.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -164,8 +175,10 @@
 		0CE45BF41A13612C00BB8612 /* Backend */ = {
 			isa = PBXGroup;
 			children = (
-				0CE45BF51A13632100BB8612 /* FlickrWrapper.h */,
-				0CE45BF61A13632100BB8612 /* FlickrWrapper.m */,
+				0CE45C001A137F4700BB8612 /* NetworkManager.m */,
+				0CE45BFF1A137F4700BB8612 /* NetworkManager.h */,
+				0CE45C051A1396F600BB8612 /* FlickrRequest.h */,
+				0CE45C061A1396F600BB8612 /* FlickrRequest.m */,
 			);
 			path = Backend;
 			sourceTree = "<group>";
@@ -228,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0CE45BC61A1352E900BB8612 /* Main.storyboard in Resources */,
+				0CE45BFE1A13799600BB8612 /* Configuration.plist in Resources */,
 				0CE45BC81A1352E900BB8612 /* Images.xcassets in Resources */,
 				0CE45BC01A1352E900BB8612 /* FlickrApp-Prefix.pch in Resources */,
 				0CE45BBE1A1352E900BB8612 /* FlickrApp-Info.plist in Resources */,
@@ -241,15 +255,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CE45C071A1396F600BB8612 /* FlickrRequest.m in Sources */,
+				0CE45BFC1A13797600BB8612 /* Configuration.m in Sources */,
 				0CE45BEF1A135AD700BB8612 /* ThumbCell.m in Sources */,
 				0CE45BED1A135AD700BB8612 /* CachingImageView.m in Sources */,
+				0CE45C011A137F4700BB8612 /* NetworkManager.m in Sources */,
 				0CE45BEE1A135AD700BB8612 /* PhotoImageView.m in Sources */,
 				0CE45BE41A13571D00BB8612 /* PhotoVC.m in Sources */,
 				0CE45BE51A13571D00BB8612 /* ThumbsVC.m in Sources */,
 				0CE45BC31A1352E900BB8612 /* AppDelegate.m in Sources */,
 				0CE45BF31A135D8000BB8612 /* ImageCache.m in Sources */,
 				0CE45BBC1A1352E900BB8612 /* main.m in Sources */,
-				0CE45BF71A13632100BB8612 /* FlickrWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
