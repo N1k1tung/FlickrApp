@@ -7,11 +7,10 @@
 //
 
 #import "ThumbsVC.h"
-#import "YPRSSLoader.h"
-#import "YPRSSItem.h"
 #import "ThumbCell.h"
 #import "PhotoVC.h"
-#import "YPDataStorage.h"
+//#import "DataStorage.h"
+#import "NetworkManager.h"
 
 @interface ThumbsVC ()
 {
@@ -58,7 +57,7 @@ static NSString* const kCellID = @"collectionCell";
 	[self.collectionView addSubview:_refreshControl];
 	self.collectionView.alwaysBounceVertical = YES;
 	
-	self.items = [[YPDataStorage sharedStorage] fetchItems];
+	self.items = [[DataStorage sharedStorage] fetchItems];
 	
 	[self refresh];
 }

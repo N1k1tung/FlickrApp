@@ -8,8 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^successHandler)();
-typedef void (^failureHandler)(NSError* error);
+// handlers are performed in background
+typedef void (^SuccessHandler)(NSData* data);
+typedef void (^FailureHandler)(NSError* error);
 
 /*!
  @class NetworkManager
@@ -20,6 +21,7 @@ typedef void (^failureHandler)(NSError* error);
 
 + (instancetype)sharedManager;
 
+- (void)requestSearchWithTag:(NSString*)tag onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
 
 @end

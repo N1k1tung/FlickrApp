@@ -45,7 +45,7 @@
 		return;
 	[_activity startAnimating];
 		
-	[[YPImageCache sharedCache] cachedImageForURL:imageURL onSuccess:^(UIImage *cachedImage) {
+	[[ImageCache sharedCache] cachedImageForURL:imageURL onSuccess:^(UIImage *cachedImage) {
 		self.image = cachedImage;
 		[self.activity stopAnimating];
 	} onFail:^{
@@ -82,7 +82,7 @@
 {
 	UIImage *image = [UIImage imageWithData:_responseData];
 	if (image)
-		[[YPImageCache sharedCache] cacheImage:image forURL:_url cacheToMemory:_useMemoryCache];
+		[[ImageCache sharedCache] cacheImage:image forURL:_url cacheToMemory:_useMemoryCache];
 	self.image = image;
 	self.responseData = nil;
 	self.activeConnection = nil;
