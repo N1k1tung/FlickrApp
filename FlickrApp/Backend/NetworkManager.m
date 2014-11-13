@@ -62,6 +62,12 @@
     return self;
 }
 
+#pragma mark - interface
+
+- (void)requestSearchWithTag:(NSString*)tag onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError {
+    [self makeRequest:[self searchWithTag:tag] onSuccess:onSuccess onError:onError];
+}
+
 #pragma mark - private
 
 - (void)makeRequest:(NSURLRequest*)request onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError {

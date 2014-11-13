@@ -21,6 +21,12 @@ typedef void (^FailureHandler)(NSError* error);
 
 + (instancetype)sharedManager;
 
+/*!
+ @discussion performs flickr search with specified tag
+ @param tag the specified tag
+ @param onSuccess successful response handler
+ @param onError unsuccessful response handler
+ */
 - (void)requestSearchWithTag:(NSString*)tag onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
 
