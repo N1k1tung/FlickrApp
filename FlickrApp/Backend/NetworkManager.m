@@ -56,7 +56,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         _downloadQueue = [NSOperationQueue new];
-        _downloadQueue.maxConcurrentOperationCount = 5;
+        _downloadQueue.maxConcurrentOperationCount = 15;
         _processingQueue = [NSOperationQueue new];
         _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     }
@@ -69,9 +69,13 @@
     [self makeRequest:[self searchWithTag:tag] onSuccess:onSuccess onError:onError];
 }
 
+- (NSURLSessionDataTask*)requestImageWithURL:(NSURL*)url onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError {
+    return [self makeRequest:[NSURLRequest requestWithURL:url] onSuccess:onSuccess onError:onError];
+}
+
 #pragma mark - private
 
-- (void)makeRequest:(NSURLRequest*)request onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError {
+- (NSURLSessionDataTask*)makeRequest:(NSURLRequest*)request onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError {
     
     // lock operation in queue until it receives response
     dispatch_semaphore_t lock = dispatch_semaphore_create(0);
@@ -101,6 +105,7 @@
         dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
         NSLog(@"operation completed");
     }];
+    return task;
 }
 
 #pragma mark - requests

@@ -31,6 +31,7 @@ typedef void (^FailureHandler)(NSError* error);
  */
 - (void)requestSearchWithTag:(NSString*)tag onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
+- (NSURLSessionDataTask*)requestImageWithURL:(NSURL*)url onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
 - (NSURL*)urlForImageInfo:(Photo*)info;
 - (NSURL*)thumbURLForImageInfo:(Photo*)info;

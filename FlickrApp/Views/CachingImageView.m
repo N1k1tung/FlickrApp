@@ -8,14 +8,13 @@
 
 #import "CachingImageView.h"
 #import "ImageCache.h"
+#import "NetworkManager.h"
 
 @interface CachingImageView () {
 }
 
-@property (nonatomic, strong) NSURLConnection* activeConnection;
-@property (nonatomic, strong) NSMutableData* responseData;
 @property (nonatomic, strong) NSURL* url;
-@property (nonatomic, strong) UIActivityIndicatorView* activity;
+@property (nonatomic, weak) NSURLSessionDataTask* dataTask;
 
 @end
 
@@ -24,10 +23,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
 	if (self = [super initWithFrame:frame]) {
-		self.activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-		_activity.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-		_activity.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-		[self addSubview:_activity];
+        self.backgroundColor = [UIColor whiteColor];
 		self.useMemoryCache = YES;
 	}
 	return self;
@@ -37,17 +33,14 @@
 
 - (void)setImageWithURL:(NSURL*)imageURL
 {
-	[_activeConnection cancel];
-	[_activity stopAnimating];
-	
+    [self.dataTask cancel];
+    
 	self.image = nil;
 	if (!imageURL)
 		return;
-	[_activity startAnimating];
 		
 	[[ImageCache sharedCache] cachedImageForURL:imageURL onSuccess:^(UIImage *cachedImage) {
 		self.image = cachedImage;
-		[self.activity stopAnimating];
 	} onFail:^{
 		[self startRequestWithURL:imageURL];
 	} useMemoryCache:_useMemoryCache];
@@ -55,39 +48,24 @@
 
 - (void)startRequestWithURL:(NSURL*)imageURL
 {
-	NSURLRequest *request = [NSURLRequest requestWithURL:imageURL]; // by default also caching images here
-	self.responseData = [NSMutableData new];
-	self.url = imageURL;
-	self.activeConnection = [NSURLConnection connectionWithRequest:request delegate:self];
+    self.url = imageURL;
+	self.dataTask = [[NetworkManager sharedManager] requestImageWithURL:imageURL onSuccess:^(NSData *data) {
+        UIImage *image = [UIImage imageWithData:data];
+        if (image)
+            [[ImageCache sharedCache] cacheImage:image forURL:_url cacheToMemory:_useMemoryCache];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.image = image;
+        });
+    } onError:^(NSError *error) {
+        NSLog(@"Error loading image at URL %@: %@", _url.absoluteString, error.localizedDescription);
+    }];
+    
 }
 
 - (void)setImage:(UIImage *)image
 {
 	[super setImage:image? image : [UIImage imageNamed:@"blankImage"]];
-}
-
-#pragma mark - NSURLConnection delegate
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-	self.activeConnection = nil;
-	[_activity stopAnimating];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-	[self.responseData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-	UIImage *image = [UIImage imageWithData:_responseData];
-	if (image)
-		[[ImageCache sharedCache] cacheImage:image forURL:_url cacheToMemory:_useMemoryCache];
-	self.image = image;
-	self.responseData = nil;
-	self.activeConnection = nil;
-	self.url = nil;
-	[_activity stopAnimating];
 }
 
 @end

@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "PhotoImageView.h"
 
-@class RSSItemInfo;
+@class Photo;
 
 @interface PhotoVC : UIViewController <PhotoImageViewDelegate, UIScrollViewDelegate>
 
-@property (nonatomic, strong) RSSItemInfo* itemInfo;
+@property (nonatomic, strong) Photo* itemInfo;
 
 @end
