@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+/*!
+ *  @class ThumbsVC
+ *  @discussion main view controller, contains thumbs of the images
+ *
+ *  @author Nikita Rodin
+ *  @version 1.0
+ */
 @interface ThumbsVC : UICollectionViewController
 
 @end

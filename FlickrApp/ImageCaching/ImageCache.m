@@ -7,7 +7,11 @@
 //
 
 #import "ImageCache.h"
-#import <SDWebImage/SDWebImageDecoder.h>
+#import "SDWebImageDecoder.h"
+
+
+// TODO: configuration
+#define IMAGES_DIR	@"images"
 
 @interface ImageCache ()
 
@@ -93,7 +97,7 @@
         if (![[NSFileManager defaultManager] fileExistsAtPath:imagesDir isDirectory:&isDir] || !isDir) {
             NSError* error = nil;
             if (![[NSFileManager defaultManager] createDirectoryAtPath:imagesDir withIntermediateDirectories:YES attributes:nil error:&error])
-                YPLog(@"%s: Failed to create directory for image cache: %@", __PRETTY_FUNCTION__, error);
+                NSLog(@"%s: Failed to create directory for image cache: %@", __PRETTY_FUNCTION__, error);
             else
                 self.diskCachingEnabled = YES;
         } else

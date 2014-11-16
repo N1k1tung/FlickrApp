@@ -8,6 +8,7 @@
 
 #import "NetworkManager.h"
 #import "Configuration.h"
+#import "Photo.h"
 
 @interface NetworkManager () {
     /*!
@@ -112,12 +113,14 @@
     static NSString* const method = @"flickr.photos.search";
     NSDictionary* params = @{@"method": method,
                              @"tags": tag,
-                             @"api_key": [Configuration flickrApiKey]};
+                             @"api_key": [Configuration flickrApiKey],
+                             @"format" : @"json"}; // nice...
     NSString* query = [NSString stringWithFormat:@"%@?%@", [Configuration flickrEndpoint], [params requestParams]];
     // rely on db cache only
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:query] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60];
     // accept json
-    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    // and here we thought flickr rest service would be actually rest...
+//    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setHTTPMethod:@"GET"];
     
     return request;
@@ -125,16 +128,16 @@
 
 #pragma mark images
 
-- (NSURL*)urlForImageInfo:(NSDictionary*)info thumb:(BOOL)thumb {
+- (NSURL*)urlForImageInfo:(Photo*)info thumb:(BOOL)thumb {
     static NSString* const URLFormat = @"https://farm%@.staticflickr.com/%@/%@_%@_%@.jpg";
-    return [NSURL URLWithString:[NSString stringWithFormat:URLFormat, info[@"farm-id"], info[@"server-id"], info[@"id"], info[@"secret"], thumb? @"q" : @"b"]];
+    return [NSURL URLWithString:[NSString stringWithFormat:URLFormat, info.farm, info.server, info.photo_id, info.secret, thumb? @"q" : @"b"]];
 }
 
-- (NSURL*)urlForImageInfo:(NSDictionary*)info {
+- (NSURL*)urlForImageInfo:(Photo*)info {
     return [self urlForImageInfo:info thumb:NO];
 }
 
-- (NSURL*)thumbURLForImageInfo:(NSDictionary*)info {
+- (NSURL*)thumbURLForImageInfo:(Photo*)info {
     return [self urlForImageInfo:info thumb:YES];
 }
 

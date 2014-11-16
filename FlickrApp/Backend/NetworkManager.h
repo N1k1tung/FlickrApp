@@ -12,6 +12,8 @@
 typedef void (^SuccessHandler)(NSData* data);
 typedef void (^FailureHandler)(NSError* error);
 
+@class Photo;
+
 /*!
  @class NetworkManager
  @author Nikita Rodin
@@ -29,6 +31,9 @@ typedef void (^FailureHandler)(NSError* error);
  */
 - (void)requestSearchWithTag:(NSString*)tag onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
+
+- (NSURL*)urlForImageInfo:(Photo*)info;
+- (NSURL*)thumbURLForImageInfo:(Photo*)info;
 
 @end
 
