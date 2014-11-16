@@ -7,6 +7,8 @@
 //
 
 #import "PhotoVC.h"
+#import "Photo.h"
+#import "NetworkManager.h"
 
 @interface PhotoVC ()
 {
@@ -77,12 +79,8 @@ static const CGFloat kBottomPanelHeight = 44.f;
 {
 	_imageView.image = nil;
 	[self resetScale];
-	if (_itemInfo.content.url.length)
-		[_imageView setImageWithURL:[NSURL URLWithString:_itemInfo.content.url]];
-	else
-		[[[UIAlertView alloc] initWithTitle:nil message:@"Can't find image's URL" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+		[_imageView setImageWithURL:[[NetworkManager sharedManager] urlForImageInfo:_itemInfo]];
 	
-	_authorLabel.text = _itemInfo.author;
 	self.navigationItem.title = _titleLabel.text = _itemInfo.title;
 }
 
@@ -114,14 +112,14 @@ static const CGFloat kBottomPanelHeight = 44.f;
 
 #pragma mark - image view delegate
 
-- (void)imageViewDidLoadImage:(YPPhotoImageView*)imageView
+- (void)imageViewDidLoadImage:(PhotoImageView*)imageView
 {
 	_scrollView.contentSize = imageView.bounds.size;
 	_scrollView.zoomScale = 0.5f * (_scrollView.minimumZoomScale + _scrollView.maximumZoomScale);
 	_scrollView.contentOffset = CGPointMake(0, -_scrollView.contentInset.top);
 }
 
-- (void)imageViewFailedToLoadImage:(YPPhotoImageView*)imageView
+- (void)imageViewFailedToLoadImage:(PhotoImageView*)imageView
 {
 	[[[UIAlertView alloc] initWithTitle:nil message:@"Failed to load image" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }

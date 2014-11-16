@@ -165,19 +165,19 @@ static NSString* const kCellID = @"collectionCell";
 {
 	ThumbCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellID forIndexPath:indexPath];
 	
-	[cell.imageView setImageWithURL:[[NetworkManager sharedManager] urlForImageInfo:[self.fetchedResultsController objectAtIndexPath:indexPath]]];
+	[cell.imageView setImageWithURL:[[NetworkManager sharedManager] thumbURLForImageInfo:[self.fetchedResultsController objectAtIndexPath:indexPath]]];
 	
 	return cell;
 }
 
-//- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-//{
-//	if (!_photoVC) {
-//		_photoVC = [PhotoVC new];
-//	}
-//	_photoVC.itemInfo = [self itemInfoForIndexPath:indexPath];
-//	[self.navigationController pushViewController:_photoVC animated:YES];
-//}
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (!_photoVC) {
+		_photoVC = [PhotoVC new];
+	}
+	_photoVC.itemInfo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+	[self.navigationController pushViewController:_photoVC animated:YES];
+}
 
 #pragma mark - Fetched results controller
 

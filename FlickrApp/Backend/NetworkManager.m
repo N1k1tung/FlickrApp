@@ -56,8 +56,9 @@
 - (instancetype)init {
     if (self = [super init]) {
         _downloadQueue = [NSOperationQueue new];
-        _downloadQueue.maxConcurrentOperationCount = 15;
+        _downloadQueue.maxConcurrentOperationCount = 7;
         _processingQueue = [NSOperationQueue new];
+        _processingQueue.maxConcurrentOperationCount = 7;
         _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     }
     return self;
@@ -100,10 +101,8 @@
     }];
     
     [_downloadQueue addOperationWithBlock:^{
-        NSLog(@"operation started");
         [task resume];
         dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
-        NSLog(@"operation completed");
     }];
     return task;
 }

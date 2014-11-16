@@ -26,6 +26,7 @@
 		A14CC3F91A194B550043C68C /* FlickrApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A14CC3F71A194B550043C68C /* FlickrApp.xcdatamodeld */; };
 		A14CC3FD1A1951320043C68C /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = A14CC3FC1A1951320043C68C /* SDWebImageDecoder.m */; };
 		A14CC4001A1955FC0043C68C /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = A14CC3FF1A1955FC0043C68C /* Photo.m */; };
+		A14CC4011A1969F00043C68C /* PhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BE11A13571D00BB8612 /* PhotoVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -268,6 +269,7 @@
 				0CE45BED1A135AD700BB8612 /* CachingImageView.m in Sources */,
 				0CE45C011A137F4700BB8612 /* NetworkManager.m in Sources */,
 				0CE45BEE1A135AD700BB8612 /* PhotoImageView.m in Sources */,
+				A14CC4011A1969F00043C68C /* PhotoVC.m in Sources */,
 				A14CC3FD1A1951320043C68C /* SDWebImageDecoder.m in Sources */,
 				0CE45BE51A13571D00BB8612 /* ThumbsVC.m in Sources */,
 				A14CC3F91A194B550043C68C /* FlickrApp.xcdatamodeld in Sources */,
