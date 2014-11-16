@@ -58,7 +58,8 @@
             self.image = image;
         });
     } onError:^(NSError *error) {
-        NSLog(@"Error loading image at URL %@: %@", _url.absoluteString, error.localizedDescription);
+        if (![error.localizedDescription isEqualToString:@"cancelled"])
+            NSLog(@"Error loading image at URL %@: %@", _url.absoluteString, error.localizedDescription);
     }];
     
 }
