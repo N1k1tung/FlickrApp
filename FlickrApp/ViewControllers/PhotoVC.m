@@ -17,15 +17,10 @@
 
 @property (nonatomic, strong) UIScrollView* scrollView;
 @property (nonatomic, strong) PhotoImageView* imageView;
-@property (nonatomic, strong) UILabel* authorLabel;
-@property (nonatomic, strong) UILabel* titleLabel;
-@property (nonatomic, strong) UIView* bottomPanel;
 
 @end
 
 @implementation PhotoVC
-
-static const CGFloat kBottomPanelHeight = 44.f;
 
 - (void)loadView
 {
@@ -46,23 +41,10 @@ static const CGFloat kBottomPanelHeight = 44.f;
 	_imageView.userInteractionEnabled = NO;
 	_imageView.delegate = self;
 	[self.scrollView addSubview:_imageView];
-	
-	self.bottomPanel = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - kBottomPanelHeight, CGRectGetWidth(self.view.bounds), kBottomPanelHeight)];
-	_bottomPanel.backgroundColor = [UIColor whiteColor];
-	_bottomPanel.userInteractionEnabled = NO;
-	_bottomPanel.alpha = 0.4f;
-	_bottomPanel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;	
-	[self.view addSubview:_bottomPanel];
-	
-	self.authorLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_bottomPanel.bounds), kBottomPanelHeight/2)];
-	_authorLabel.textAlignment = NSTextAlignmentCenter;
-	_authorLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	[_bottomPanel addSubview:_authorLabel];
-	self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kBottomPanelHeight/2, CGRectGetWidth(_bottomPanel.bounds), kBottomPanelHeight/2)];
-	_titleLabel.textAlignment = NSTextAlignmentCenter;
-	_titleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-	[_bottomPanel addSubview:_titleLabel];
-	
+		
+    UIGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView)];
+    [self.scrollView addGestureRecognizer:tapGesture];
+    
 	_needRefresh = YES;
 }
 
@@ -73,6 +55,8 @@ static const CGFloat kBottomPanelHeight = 44.f;
 		_needRefresh = NO;
 		[self refresh];
 	}
+    
+    [self scheduleHideNavBar];
 }
 
 - (void)refresh
@@ -81,7 +65,7 @@ static const CGFloat kBottomPanelHeight = 44.f;
 	[self resetScale];
 		[_imageView setImageWithURL:[[NetworkManager sharedManager] urlForImageInfo:_itemInfo]];
 	
-	self.navigationItem.title = _titleLabel.text = _itemInfo.title;
+	self.navigationItem.title = _itemInfo.title;
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -129,6 +113,30 @@ static const CGFloat kBottomPanelHeight = 44.f;
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
 	return _imageView;
+}
+
+#pragma mark - show/hide nav bar
+
+- (void)showNavBar:(BOOL)show {
+    [self.navigationController setNavigationBarHidden:!show animated:YES];
+    
+    if (show)
+        [self scheduleHideNavBar];
+}
+
+- (void)tappedView {
+    [self showNavBar:YES];
+}
+
+/*!
+ @discussion performs hide of navigation bar after a short delay
+ */
+- (void)scheduleHideNavBar {
+    typeof(self) __weak weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [weakSelf showNavBar:NO];
+    });
+
 }
 
 @end

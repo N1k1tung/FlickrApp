@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <CoreData/CoreData.h>
 #import "ThumbsVC.h"
+#import "NavController.h"
 
 @implementation AppDelegate
 
@@ -22,7 +23,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[ThumbsVC new]];
+    self.window.rootViewController = [[NavController alloc] initWithRootViewController:[ThumbsVC new]];
     [self.window makeKeyAndVisible];
     
     return YES;

@@ -11,6 +11,11 @@
 
 @class Photo;
 
+/*!
+ @class PhotoVC
+ @author Nikita Rodin
+ @discussion fullscreen image screen, instead of a done button it hides/shows navigation bar
+ */
 @interface PhotoVC : UIViewController <PhotoImageViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) Photo* itemInfo;

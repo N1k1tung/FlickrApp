@@ -125,8 +125,7 @@ static NSString* const kCellID = @"collectionCell";
     }
     
     [[NetworkManager sharedManager] requestSearchWithTag:@"it" onSuccess:^(NSData *data) {
-        // TODO: remove from main q
-        dispatch_async(dispatch_get_main_queue(), ^{
+
             NSError* error = nil;
             
             // workaround the Flickr json response format
@@ -143,34 +142,35 @@ static NSString* const kCellID = @"collectionCell";
             if (error) {
                 [[[UIAlertView alloc] initWithTitle:@"Warning" message:[NSString stringWithFormat:@"Error while parsing feed: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
             } else
-                if ([result respondsToSelector:@selector(objectForKeyedSubscript:)]) { // success, create models
-                    NSArray* photos = result[@"photos"][@"photo"];
-                    
-                    for (NSDictionary* photo in photos) {
-                        if (![photo respondsToSelector:@selector(objectForKeyedSubscript:)])
-                            continue;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ([result respondsToSelector:@selector(objectForKeyedSubscript:)]) { // success, create models
+                        NSArray* photos = result[@"photos"][@"photo"];
                         
-                        // check for existing
-                        Photo* photoDB = [self photoWithId:photo[@"id"]];
-                        if (!photoDB) {
-                            // create new
-                            photoDB = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([Photo class]) inManagedObjectContext:self.fetchedResultsController.managedObjectContext];
+                        for (NSDictionary* photo in photos) {
+                            if (![photo respondsToSelector:@selector(objectForKeyedSubscript:)])
+                                continue;
+                            
+                            // check for existing
+                            Photo* photoDB = [self photoWithId:photo[@"id"]];
+                            if (!photoDB) {
+                                // create new
+                                photoDB = [NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([Photo class]) inManagedObjectContext:self.fetchedResultsController.managedObjectContext];
+                            }
+                            // update fields
+                            photoDB.photo_id = photo[@"id"];
+                            photoDB.title = photo[@"title"];
+                            photoDB.farm = photo[@"farm"];
+                            photoDB.server = photo[@"server"];
+                            photoDB.secret = photo[@"secret"];
+                            photoDB.owner = photo[@"owner"];
                         }
-                        // update fields
-                        photoDB.photo_id = photo[@"id"];
-                        photoDB.title = photo[@"title"];
-                        photoDB.farm = photo[@"farm"];
-                        photoDB.server = photo[@"server"];
-                        photoDB.secret = photo[@"secret"];
-                        photoDB.owner = photo[@"owner"];
                     }
-                }
-            
-            [[AppDelegate sharedInstance] saveContext];
-            
-            [_activityIndicator stopAnimating];
-            [_refreshControl endRefreshing];
-        });
+                    
+                    [[AppDelegate sharedInstance] saveContext];
+                    
+                    [_activityIndicator stopAnimating];
+                    [_refreshControl endRefreshing];
+                });
     } onError:^(NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [[[UIAlertView alloc] initWithTitle:@"Warning" message:[NSString stringWithFormat:@"Error while loading feed: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
@@ -344,6 +344,7 @@ static NSString* const kCellID = @"collectionCell";
                 case NSFetchedResultsChangeMove:
                     [self.collectionView deleteItemsAtIndexPaths:@[update.indexPath]];
                     [self.collectionView insertItemsAtIndexPaths:@[update.aNewIndexPath]];
+                    [self configureCell:(ThumbCell*)[self.collectionView cellForItemAtIndexPath:update.aNewIndexPath] atIndexPath:update.indexPath];
                     break;
             }
 
@@ -388,7 +389,7 @@ static NSString* const kCellID = @"collectionCell";
     if (self = [super init]) {
         self.sectionInset = UIEdgeInsetsMake(4, 8, 4, 8);
         CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-        CGFloat itemWidth = (screenWidth-self.sectionInset.left-self.sectionInset.right) / 3.3; // 0.25 accounts for inter-item space
+        CGFloat itemWidth = (screenWidth-self.sectionInset.left-self.sectionInset.right) / 3.3; // 0.3 accounts for inter-item space
         self.itemSize = CGSizeMake(itemWidth, itemWidth);
         self.minimumLineSpacing = 15;
     }
