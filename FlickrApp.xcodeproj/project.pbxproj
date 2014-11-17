@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C5454C41A1A39C9009DD8E3 /* UIImage+FaceDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C5454C31A1A39C9009DD8E3 /* UIImage+FaceDetection.m */; };
 		0C8E87CA1A1A221800AFF991 /* Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E87C91A1A221800AFF991 /* Localization.m */; };
 		0C97CC3A1A1A0783008CEE4C /* NavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C97CC391A1A0783008CEE4C /* NavController.m */; };
 		0C97CC3C1A1A16E7008CEE4C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C97CC3B1A1A16E7008CEE4C /* CoreText.framework */; };
@@ -33,11 +32,10 @@
 		A14CC3FD1A1951320043C68C /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = A14CC3FC1A1951320043C68C /* SDWebImageDecoder.m */; };
 		A14CC4001A1955FC0043C68C /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = A14CC3FF1A1955FC0043C68C /* Photo.m */; };
 		A14CC4011A1969F00043C68C /* PhotoVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CE45BE11A13571D00BB8612 /* PhotoVC.m */; };
+		A1A573A61A1A76D1003FF108 /* UIImage+FaceDetection.m in Sources */ = {isa = PBXBuildFile; fileRef = A1A573A51A1A76D1003FF108 /* UIImage+FaceDetection.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0C5454C21A1A39C9009DD8E3 /* UIImage+FaceDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+FaceDetection.h"; sourceTree = "<group>"; };
-		0C5454C31A1A39C9009DD8E3 /* UIImage+FaceDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FaceDetection.m"; sourceTree = "<group>"; };
 		0C8E87C71A1A21E200AFF991 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0C8E87C81A1A221800AFF991 /* Localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Localization.h; sourceTree = "<group>"; };
 		0C8E87C91A1A221800AFF991 /* Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Localization.m; sourceTree = "<group>"; };
@@ -81,6 +79,8 @@
 		A14CC3FC1A1951320043C68C /* SDWebImageDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebImageDecoder.m; sourceTree = "<group>"; };
 		A14CC3FE1A1955FC0043C68C /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo.h; sourceTree = "<group>"; };
 		A14CC3FF1A1955FC0043C68C /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
+		A1A573A41A1A76D1003FF108 /* UIImage+FaceDetection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+FaceDetection.h"; sourceTree = "<group>"; };
+		A1A573A51A1A76D1003FF108 /* UIImage+FaceDetection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FaceDetection.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +192,8 @@
 		0CE45BF01A135D8000BB8612 /* ImageCaching */ = {
 			isa = PBXGroup;
 			children = (
+				A1A573A41A1A76D1003FF108 /* UIImage+FaceDetection.h */,
+				A1A573A51A1A76D1003FF108 /* UIImage+FaceDetection.m */,
 				0CE45BF11A135D8000BB8612 /* ImageCache.h */,
 				0CE45BF21A135D8000BB8612 /* ImageCache.m */,
 			);
@@ -214,8 +216,6 @@
 			children = (
 				A14CC3FB1A1951320043C68C /* SDWebImageDecoder.h */,
 				A14CC3FC1A1951320043C68C /* SDWebImageDecoder.m */,
-				0C5454C21A1A39C9009DD8E3 /* UIImage+FaceDetection.h */,
-				0C5454C31A1A39C9009DD8E3 /* UIImage+FaceDetection.m */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -297,7 +297,7 @@
 				0CE45BFC1A13797600BB8612 /* Configuration.m in Sources */,
 				0C8E87CA1A1A221800AFF991 /* Localization.m in Sources */,
 				0CE45BEF1A135AD700BB8612 /* ThumbCell.m in Sources */,
-				0C5454C41A1A39C9009DD8E3 /* UIImage+FaceDetection.m in Sources */,
+				A1A573A61A1A76D1003FF108 /* UIImage+FaceDetection.m in Sources */,
 				0C97CC3A1A1A0783008CEE4C /* NavController.m in Sources */,
 				0CE45BED1A135AD700BB8612 /* CachingImageView.m in Sources */,
 				0CE45C011A137F4700BB8612 /* NetworkManager.m in Sources */,

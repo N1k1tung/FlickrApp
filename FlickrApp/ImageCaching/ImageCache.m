@@ -68,6 +68,8 @@
             } else // check if original is already in cache
             {
                 if ((cachedImage = [self cachedImageForPath:cachePath useMemoryCache:useMemoryCache])) {
+                    UIImage* processedImage = [cachedImage croppedToSize:size aroundLargestFaceWithAccuracy:CIDetectorAccuracyHigh];
+                    [self cacheImage:processedImage forFilePath:processedFilePath cacheToMemory:useMemoryCache];
                     if (onSuccess)
                         dispatch_sync(dispatch_get_main_queue(), ^{
                             onSuccess(cachedImage);

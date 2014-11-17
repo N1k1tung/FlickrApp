@@ -54,7 +54,10 @@
 }
 
 - (void)setCroppedImageWithURL:(NSURL*)imageURL {
-    [self setImageWithURL:imageURL cropSize:self.bounds.size];
+    CGSize size = self.bounds.size;
+    size.width *= self.contentScaleFactor;
+    size.height *= self.contentScaleFactor;
+    [self setImageWithURL:imageURL cropSize:size];
 }
 
 - (void)startRequestWithURL:(NSURL*)imageURL
