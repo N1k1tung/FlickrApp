@@ -225,6 +225,8 @@ static NSString* const kCellID = @"collectionCell";
 - (void)configureCell:(ThumbCell*)cell atIndexPath:(NSIndexPath *)indexPath {
     Photo* imageInfo = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [cell.imageView setImageWithURL:_largeThumbsLayout? [[NetworkManager sharedManager] largeThumbURLForImageInfo:imageInfo] : [[NetworkManager sharedManager] thumbURLForImageInfo:imageInfo]];
+    cell.titleView.hidden = !_largeThumbsLayout;
+    cell.titleView.text = imageInfo.title;
 }
 
 // cell selection
@@ -378,6 +380,7 @@ static NSString* const kCellID = @"collectionCell";
     _largeThumbsLayout = !_largeThumbsLayout;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:_largeThumbsLayout? @"grid" : @"table"] style:UIBarButtonItemStylePlain target:self action:@selector(changeLayoutTapped)];
     self.collectionView.collectionViewLayout = _largeThumbsLayout? [LargeThumbsFlow new] : [ThreePerRowFlow new];
+    [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
 }
 
 @end

@@ -10,12 +10,24 @@
 #import "CachingImageView.h"
 
 /*!
+ @class CoreTextView
+ @author Nikita Rodin
+ @discussion core text rendered label
+ */
+@interface CoreTextView : UIView
+
+@property (nonatomic, copy) NSString* text;
+
+@end
+
+/*!
  @class ThumbCell
  @author Nikita Rodin
- @discussion simple collection view cell with a caching image view as only subview
+ @discussion simple collection view cell with a caching image view and a coreText-rendered title
  */
 @interface ThumbCell : UICollectionViewCell
 
 @property (nonatomic, strong) CachingImageView* imageView;
+@property (nonatomic, strong) CoreTextView* titleView;
 
 @end
