@@ -25,6 +25,7 @@
 	if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor whiteColor];
 		self.useMemoryCache = YES;
+        self.opaque = YES;
 	}
 	return self;
 }

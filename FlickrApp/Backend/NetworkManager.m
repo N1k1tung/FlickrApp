@@ -56,9 +56,9 @@
 - (instancetype)init {
     if (self = [super init]) {
         _downloadQueue = [NSOperationQueue new];
-        _downloadQueue.maxConcurrentOperationCount = 7;
+        _downloadQueue.maxConcurrentOperationCount = 5;
         _processingQueue = [NSOperationQueue new];
-        _processingQueue.maxConcurrentOperationCount = 7;
+        _processingQueue.maxConcurrentOperationCount = 5;
         _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     }
     return self;
@@ -72,6 +72,18 @@
 
 - (NSURLSessionDataTask*)requestImageWithURL:(NSURL*)url onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError {
     return [self makeRequest:[NSURLRequest requestWithURL:url] onSuccess:onSuccess onError:onError];
+}
+
+- (NSURL*)urlForImageInfo:(Photo*)info {
+    return [self urlForImageInfo:info size:ImageSizeBig];
+}
+
+- (NSURL*)thumbURLForImageInfo:(Photo*)info {
+    return [self urlForImageInfo:info size:ImageSizeSmallThumb];
+}
+
+- (NSURL*)largeThumbURLForImageInfo:(Photo*)info {
+    return [self urlForImageInfo:info size:ImageSizeLargeThumb];
 }
 
 #pragma mark - private
@@ -132,17 +144,15 @@
 
 #pragma mark images
 
-- (NSURL*)urlForImageInfo:(Photo*)info thumb:(BOOL)thumb {
+typedef NS_ENUM(NSUInteger, ImageSize) {
+    ImageSizeSmallThumb,
+    ImageSizeLargeThumb,
+    ImageSizeBig,
+};
+
+- (NSURL*)urlForImageInfo:(Photo*)info size:(ImageSize)size {
     static NSString* const URLFormat = @"https://farm%@.staticflickr.com/%@/%@_%@_%@.jpg";
-    return [NSURL URLWithString:[NSString stringWithFormat:URLFormat, info.farm, info.server, info.photo_id, info.secret, thumb? @"q" : @"b"]];
-}
-
-- (NSURL*)urlForImageInfo:(Photo*)info {
-    return [self urlForImageInfo:info thumb:NO];
-}
-
-- (NSURL*)thumbURLForImageInfo:(Photo*)info {
-    return [self urlForImageInfo:info thumb:YES];
+    return [NSURL URLWithString:[NSString stringWithFormat:URLFormat, info.farm, info.server, info.photo_id, info.secret, size == ImageSizeSmallThumb? @"q" : size == ImageSizeLargeThumb? @"n" : @"b"]];
 }
 
 @end

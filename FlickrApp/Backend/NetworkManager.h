@@ -31,10 +31,32 @@ typedef void (^FailureHandler)(NSError* error);
  */
 - (void)requestSearchWithTag:(NSString*)tag onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
+/*!
+ @discussion loads image at specified url
+ @return created data task (can be used to cancel request)
+ @param url the specified url
+ @param onSuccess successful response handler
+ @param onError unsuccessful response handler
+ */
 - (NSURLSessionDataTask*)requestImageWithURL:(NSURL*)url onSuccess:(SuccessHandler)onSuccess onError:(FailureHandler)onError;
 
+/*!
+ @return url for large image
+ @param photo flickr photo info
+ */
 - (NSURL*)urlForImageInfo:(Photo*)info;
+
+/*!
+ @return url for small thumb
+ @param photo flickr photo info
+ */
 - (NSURL*)thumbURLForImageInfo:(Photo*)info;
+
+/*!
+ @return url for large thumb
+ @param photo flickr photo info
+ */
+- (NSURL*)largeThumbURLForImageInfo:(Photo*)info;
 
 @end
 

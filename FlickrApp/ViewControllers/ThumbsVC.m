@@ -14,15 +14,61 @@
 #import "AppDelegate.h"
 #import "Photo.h"
 
+/*!
+ @discussion large thumbs layout
+ */
+@interface LargeThumbsFlow : UICollectionViewFlowLayout
+
+@end
+
+/*!
+ @discussion default layout
+ */
+@interface ThreePerRowFlow : UICollectionViewFlowLayout
+
+@end
+
+/*!
+ @discussion collection view update info
+ */
+@interface CollectionViewUpdate : NSObject
+
+@property (nonatomic, strong) NSIndexPath* indexPath;
+@property (nonatomic, strong) NSIndexPath* aNewIndexPath;
+@property (nonatomic, assign) NSFetchedResultsChangeType type;
+
++ (instancetype)updateWithIndexPath:(NSIndexPath*)indexPath newIndexPath:(NSIndexPath*)newIndexPath type:(NSFetchedResultsChangeType)type;
+
+@end
+
+/*!
+ @discussion collection view section update info
+ */
+@interface CollectionViewSectionUpdate : NSObject
+
+@property (nonatomic, assign) NSUInteger sectionIndex;
+@property (nonatomic, assign) NSFetchedResultsChangeType type;
+
++ (instancetype)updateWithSectionIndex:(NSUInteger)sectionIndex type:(NSFetchedResultsChangeType)type;
+
+@end
+
 @interface ThumbsVC () <NSFetchedResultsControllerDelegate>
 {
 	PhotoVC* _photoVC;
+    
+    // current layout
+    BOOL _largeThumbsLayout;
 }
 
 @property (nonatomic, strong) UIActivityIndicatorView* activityIndicator;
 @property (nonatomic, strong) UIRefreshControl* refreshControl;
 
 @property (nonatomic, strong) NSFetchedResultsController* fetchedResultsController;
+
+// batch updates
+@property (nonatomic, strong) NSMutableArray* itemUpdates;
+@property (nonatomic, strong) NSMutableArray* sectionUpdates;
 
 @end
 
@@ -32,7 +78,7 @@ static NSString* const kCellID = @"collectionCell";
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    self = [super initWithCollectionViewLayout:[UICollectionViewFlowLayout new]];
+    self = [super initWithCollectionViewLayout:[ThreePerRowFlow new]];
     if (self) {
     }
     return self;
@@ -59,6 +105,9 @@ static NSString* const kCellID = @"collectionCell";
 	[self.collectionView addSubview:_refreshControl];
 	self.collectionView.alwaysBounceVertical = YES;
 	
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"table"] style:UIBarButtonItemStylePlain target:self action:@selector(changeLayoutTapped)];
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+    
 	[self refresh];
 }
 
@@ -70,8 +119,10 @@ static NSString* const kCellID = @"collectionCell";
 
 - (void)refresh
 {
-	[_activityIndicator startAnimating];
-	[_refreshControl beginRefreshing];
+    if (self.fetchedResultsController.sections.count == 0 || [[self.fetchedResultsController sections][0] numberOfObjects] == 0) { // empty
+        [_activityIndicator startAnimating];
+        [_refreshControl beginRefreshing];
+    }
     
     [[NetworkManager sharedManager] requestSearchWithTag:@"it" onSuccess:^(NSData *data) {
         // TODO: remove from main q
@@ -116,8 +167,6 @@ static NSString* const kCellID = @"collectionCell";
                 }
             
             [[AppDelegate sharedInstance] saveContext];
-            // TODO: remove
-            [self.collectionView reloadData];
             
             [_activityIndicator stopAnimating];
             [_refreshControl endRefreshing];
@@ -137,12 +186,12 @@ static NSString* const kCellID = @"collectionCell";
 
 - (BOOL)shouldAutorotate
 {
-	return NO;
+	return YES;
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-	return UIInterfaceOrientationPortrait;
+	return UIInterfaceOrientationMaskPortrait;
 }
 
 #pragma mark - collection view
@@ -165,11 +214,20 @@ static NSString* const kCellID = @"collectionCell";
 {
 	ThumbCell* cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellID forIndexPath:indexPath];
 	
-	[cell.imageView setImageWithURL:[[NetworkManager sharedManager] thumbURLForImageInfo:[self.fetchedResultsController objectAtIndexPath:indexPath]]];
+    [self configureCell:cell atIndexPath:indexPath];
 	
 	return cell;
 }
 
+/*!
+ @discussion configures specified cell
+ */
+- (void)configureCell:(ThumbCell*)cell atIndexPath:(NSIndexPath *)indexPath {
+    Photo* imageInfo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    [cell.imageView setImageWithURL:_largeThumbsLayout? [[NetworkManager sharedManager] largeThumbURLForImageInfo:imageInfo] : [[NetworkManager sharedManager] thumbURLForImageInfo:imageInfo]];
+}
+
+// cell selection
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 	if (!_photoVC) {
@@ -218,68 +276,81 @@ static NSString* const kCellID = @"collectionCell";
     return _fetchedResultsController;
 }
 
-//- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-//{
-//    if (controller != [self fetchedResultsController])
-//        return;
-//    
-//}
-//
-//- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
-//           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
-//{
-//    if (controller != [self fetchedResultsController])
-//        return;
-//    
-//    switch(type) {
-//        case NSFetchedResultsChangeInsert:
-//            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//            
-//        case NSFetchedResultsChangeDelete:
-//            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//            
-//        default:
-//            return;
-//    }
-//}
-//
-//- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
-//       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
-//      newIndexPath:(NSIndexPath *)newIndexPath
-//{
-//    if (controller != [self fetchedResultsController])
-//        return;
-//    
-//    UITableView *tableView = self.tableView;
-//    
-//    switch(type) {
-//        case NSFetchedResultsChangeInsert:
-//            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//            
-//        case NSFetchedResultsChangeDelete:
-//            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//            
-//        case NSFetchedResultsChangeUpdate:
-//            [self configureCell:(ChallengeCell*)[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
-//            break;
-//            
-//        case NSFetchedResultsChangeMove:
-//            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
-//            break;
-//    }
-//}
-//
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    if (controller != [self fetchedResultsController])
+        return;
+ 
+    self.sectionUpdates = [NSMutableArray new];
+    self.itemUpdates = [NSMutableArray new];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    if (controller != [self fetchedResultsController])
+        return;
+
+    [self.sectionUpdates addObject:[CollectionViewSectionUpdate updateWithSectionIndex:sectionIndex type:type]];
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    if (controller != [self fetchedResultsController])
+        return;
+    
+    [self.itemUpdates addObject:[CollectionViewUpdate updateWithIndexPath:indexPath newIndexPath:newIndexPath type:type]];
+}
+
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     if (controller != [self fetchedResultsController])
         return;
 
-    [self.collectionView reloadData];
+
+    [self.collectionView performBatchUpdates:^{
+        for (CollectionViewSectionUpdate* update in self.sectionUpdates) {
+            switch(update.type) {
+                case NSFetchedResultsChangeInsert:
+                    [self.collectionView insertSections:[NSIndexSet indexSetWithIndex:update.sectionIndex]];
+                    break;
+                    
+                case NSFetchedResultsChangeDelete:
+                    [self.collectionView deleteSections:[NSIndexSet indexSetWithIndex:update.sectionIndex]];
+                    break;
+                    
+                default:
+                    return;
+            }
+        }
+        
+        for (CollectionViewUpdate* update in self.itemUpdates) {
+            switch(update.type) {
+                case NSFetchedResultsChangeInsert:
+                    [self.collectionView insertItemsAtIndexPaths:@[update.aNewIndexPath]];
+                    break;
+                    
+                case NSFetchedResultsChangeDelete:
+                    [self.collectionView deleteItemsAtIndexPaths:@[update.indexPath]];
+                    break;
+                    
+                case NSFetchedResultsChangeUpdate:
+                    [self configureCell:(ThumbCell*)[self.collectionView cellForItemAtIndexPath:update.indexPath] atIndexPath:update.indexPath];
+                    break;
+                    
+                case NSFetchedResultsChangeMove:
+                    [self.collectionView deleteItemsAtIndexPaths:@[update.indexPath]];
+                    [self.collectionView insertItemsAtIndexPaths:@[update.aNewIndexPath]];
+                    break;
+            }
+
+        }
+        
+    } completion:nil];
+    
 }
 
 /*!
@@ -297,6 +368,72 @@ static NSString* const kCellID = @"collectionCell";
     
     NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:NULL];
     return [fetchedObjects lastObject];
+}
+
+#pragma mark - actions
+
+// grid/table switch
+- (void)changeLayoutTapped {
+    _largeThumbsLayout = !_largeThumbsLayout;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:_largeThumbsLayout? @"grid" : @"table"] style:UIBarButtonItemStylePlain target:self action:@selector(changeLayoutTapped)];
+    self.collectionView.collectionViewLayout = _largeThumbsLayout? [LargeThumbsFlow new] : [ThreePerRowFlow new];
+}
+
+@end
+
+
+@implementation ThreePerRowFlow
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.sectionInset = UIEdgeInsetsMake(4, 8, 4, 8);
+        CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+        CGFloat itemWidth = (screenWidth-self.sectionInset.left-self.sectionInset.right) / 3.3; // 0.25 accounts for inter-item space
+        self.itemSize = CGSizeMake(itemWidth, itemWidth);
+        self.minimumLineSpacing = 15;
+    }
+    return self;
+}
+
+
+@end
+
+@implementation LargeThumbsFlow
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.sectionInset = UIEdgeInsetsMake(4, 8, 4, 8);
+        CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+        CGFloat itemWidth = screenWidth-self.sectionInset.left-self.sectionInset.right;
+        self.itemSize = CGSizeMake(itemWidth, itemWidth/16*9);
+        self.minimumLineSpacing = 15;
+    }
+    return self;
+}
+
+@end
+
+
+@implementation CollectionViewUpdate
+
++ (instancetype)updateWithIndexPath:(NSIndexPath*)indexPath newIndexPath:(NSIndexPath*)newIndexPath type:(NSFetchedResultsChangeType)type {
+    CollectionViewUpdate* update = [CollectionViewUpdate new];
+    update.indexPath = indexPath;
+    update.aNewIndexPath = newIndexPath;
+    update.type = type;
+    return update;
+}
+
+@end
+
+
+@implementation CollectionViewSectionUpdate
+
++ (instancetype)updateWithSectionIndex:(NSUInteger)sectionIndex type:(NSFetchedResultsChangeType)type {
+    CollectionViewSectionUpdate* update = [CollectionViewSectionUpdate new];
+    update.sectionIndex = sectionIndex;
+    update.type = type;
+    return update;
 }
 
 @end

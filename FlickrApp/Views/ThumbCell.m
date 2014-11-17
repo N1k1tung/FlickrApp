@@ -15,6 +15,9 @@
     self = [super initWithFrame:frame];
     if (self) {
 		self.imageView = [[CachingImageView alloc] initWithFrame:self.bounds];
+        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.imageView.layer.masksToBounds = true;
 		[self addSubview:_imageView];
 	}
     return self;
