@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  FlickrApp
+
+  Created by Nikita Rodin on 11/17/14.
+  Copyright (c) 2014 Artezio. All rights reserved.
+*/
+
+"Save" = "Save";
+"Photos" = "Photos";
+"Settings" = "Settings";
+"Choose language" = "Choose language:";

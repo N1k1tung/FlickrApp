@@ -13,6 +13,8 @@
 #import "NetworkManager.h"
 #import "AppDelegate.h"
 #import "Photo.h"
+#import "SettingsTableViewController.h"
+#import "Localization.h"
 
 /*!
  @discussion large thumbs layout
@@ -89,7 +91,7 @@ static NSString* const kCellID = @"collectionCell";
     [super viewDidLoad];
     self.collectionView.backgroundColor = [UIColor redColor];
 	[self.collectionView registerClass:[ThumbCell class] forCellWithReuseIdentifier:kCellID];
-	self.navigationItem.title = @"Photos";
+	self.navigationItem.title = MYLocalizedString(@"Photos", );
 	if (!_activityIndicator) {
 		self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 		_activityIndicator.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
@@ -106,15 +108,26 @@ static NSString* const kCellID = @"collectionCell";
 	self.collectionView.alwaysBounceVertical = YES;
 	
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"table"] style:UIBarButtonItemStylePlain target:self action:@selector(changeLayoutTapped)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"gear"] style:UIBarButtonItemStylePlain target:self action:@selector(settingsTapped)];
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     
 	[self refresh];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(localeChanged) name:kEventChangedLocale object:nil];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
 	_photoVC = nil;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)localeChanged {
+    self.navigationItem.title = MYLocalizedString(@"Photos", );
 }
 
 - (void)refresh
@@ -344,9 +357,8 @@ static NSString* const kCellID = @"collectionCell";
                     break;
                     
                 case NSFetchedResultsChangeMove:
-                    [self.collectionView deleteItemsAtIndexPaths:@[update.indexPath]];
-                    [self.collectionView insertItemsAtIndexPaths:@[update.aNewIndexPath]];
-                    [self configureCell:(ThumbCell*)[self.collectionView cellForItemAtIndexPath:update.aNewIndexPath] atIndexPath:update.indexPath];
+                    [self.collectionView moveItemAtIndexPath:update.indexPath toIndexPath:update.aNewIndexPath];
+                    [self configureCell:(ThumbCell*)[self.collectionView cellForItemAtIndexPath:update.aNewIndexPath] atIndexPath:update.aNewIndexPath];
                     break;
             }
 
@@ -381,6 +393,12 @@ static NSString* const kCellID = @"collectionCell";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:_largeThumbsLayout? @"grid" : @"table"] style:UIBarButtonItemStylePlain target:self action:@selector(changeLayoutTapped)];
     self.collectionView.collectionViewLayout = _largeThumbsLayout? [LargeThumbsFlow new] : [ThreePerRowFlow new];
     [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
+}
+
+// show settings
+- (void)settingsTapped {
+    SettingsTableViewController* vc = [SettingsTableViewController new];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end

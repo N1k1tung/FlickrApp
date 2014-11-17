@@ -26,6 +26,11 @@
     self.window.rootViewController = [[NavController alloc] initWithRootViewController:[ThumbsVC new]];
     [self.window makeKeyAndVisible];
     
+    if (![[NSUserDefaults standardUserDefaults] stringForKey:@"locale"]) {
+        [[NSUserDefaults standardUserDefaults] setValue:@"en" forKey:@"locale"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     return YES;
 }
 							

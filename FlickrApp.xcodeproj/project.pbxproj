@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C8E87CA1A1A221800AFF991 /* Localization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E87C91A1A221800AFF991 /* Localization.m */; };
 		0C97CC3A1A1A0783008CEE4C /* NavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C97CC391A1A0783008CEE4C /* NavController.m */; };
 		0C97CC3C1A1A16E7008CEE4C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C97CC3B1A1A16E7008CEE4C /* CoreText.framework */; };
+		0C97CC3F1A1A1C0B008CEE4C /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C97CC3E1A1A1C0B008CEE4C /* SettingsTableViewController.m */; };
+		0C97CC421A1A20D0008CEE4C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0C97CC441A1A20D0008CEE4C /* Localizable.strings */; };
 		0CE45BB31A1352E900BB8612 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CE45BB21A1352E900BB8612 /* Foundation.framework */; };
 		0CE45BB51A1352E900BB8612 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CE45BB41A1352E900BB8612 /* CoreGraphics.framework */; };
 		0CE45BB71A1352E900BB8612 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CE45BB61A1352E900BB8612 /* UIKit.framework */; };
@@ -32,9 +35,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0C8E87C71A1A21E200AFF991 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0C8E87C81A1A221800AFF991 /* Localization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Localization.h; sourceTree = "<group>"; };
+		0C8E87C91A1A221800AFF991 /* Localization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Localization.m; sourceTree = "<group>"; };
 		0C97CC381A1A0783008CEE4C /* NavController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavController.h; sourceTree = "<group>"; };
 		0C97CC391A1A0783008CEE4C /* NavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavController.m; sourceTree = "<group>"; };
 		0C97CC3B1A1A16E7008CEE4C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		0C97CC3D1A1A1C0B008CEE4C /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
+		0C97CC3E1A1A1C0B008CEE4C /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
+		0C97CC431A1A20D0008CEE4C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0CE45BAF1A1352E900BB8612 /* FlickrApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CE45BB21A1352E900BB8612 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0CE45BB41A1352E900BB8612 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -131,6 +140,8 @@
 				0CE45BB91A1352E900BB8612 /* Supporting Files */,
 				0CE45BFA1A13797600BB8612 /* Configuration.h */,
 				0CE45BFB1A13797600BB8612 /* Configuration.m */,
+				0C8E87C81A1A221800AFF991 /* Localization.h */,
+				0C8E87C91A1A221800AFF991 /* Localization.m */,
 			);
 			path = FlickrApp;
 			sourceTree = "<group>";
@@ -142,6 +153,7 @@
 				0CE45BBB1A1352E900BB8612 /* main.m */,
 				0CE45BFD1A13799600BB8612 /* Configuration.plist */,
 				A14CC3F71A194B550043C68C /* FlickrApp.xcdatamodeld */,
+				0C97CC441A1A20D0008CEE4C /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -155,6 +167,8 @@
 				0CE45BE31A13571D00BB8612 /* ThumbsVC.m */,
 				0C97CC381A1A0783008CEE4C /* NavController.h */,
 				0C97CC391A1A0783008CEE4C /* NavController.m */,
+				0C97CC3D1A1A1C0B008CEE4C /* SettingsTableViewController.h */,
+				0C97CC3E1A1A1C0B008CEE4C /* SettingsTableViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -242,6 +256,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 0CE45BA61A1352E900BB8612;
 			productRefGroup = 0CE45BB01A1352E900BB8612 /* Products */;
@@ -258,6 +273,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C97CC421A1A20D0008CEE4C /* Localizable.strings in Resources */,
 				0CE45BFE1A13799600BB8612 /* Configuration.plist in Resources */,
 				0CE45BC81A1352E900BB8612 /* Images.xcassets in Resources */,
 				0CE45BC01A1352E900BB8612 /* FlickrApp-Prefix.pch in Resources */,
@@ -274,6 +290,7 @@
 			files = (
 				A14CC4001A1955FC0043C68C /* Photo.m in Sources */,
 				0CE45BFC1A13797600BB8612 /* Configuration.m in Sources */,
+				0C8E87CA1A1A221800AFF991 /* Localization.m in Sources */,
 				0CE45BEF1A135AD700BB8612 /* ThumbCell.m in Sources */,
 				0C97CC3A1A1A0783008CEE4C /* NavController.m in Sources */,
 				0CE45BED1A135AD700BB8612 /* CachingImageView.m in Sources */,
@@ -284,12 +301,25 @@
 				0CE45BE51A13571D00BB8612 /* ThumbsVC.m in Sources */,
 				A14CC3F91A194B550043C68C /* FlickrApp.xcdatamodeld in Sources */,
 				0CE45BC31A1352E900BB8612 /* AppDelegate.m in Sources */,
+				0C97CC3F1A1A1C0B008CEE4C /* SettingsTableViewController.m in Sources */,
 				0CE45BF31A135D8000BB8612 /* ImageCache.m in Sources */,
 				0CE45BBC1A1352E900BB8612 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0C97CC441A1A20D0008CEE4C /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0C97CC431A1A20D0008CEE4C /* en */,
+				0C8E87C71A1A21E200AFF991 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0CE45BD71A1352E900BB8612 /* Debug */ = {
