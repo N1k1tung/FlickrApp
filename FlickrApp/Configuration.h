@@ -21,4 +21,6 @@
 
 + (NSString*)flickrEndpoint;
 
++ (NSString*)imagesDir;
+
 @end

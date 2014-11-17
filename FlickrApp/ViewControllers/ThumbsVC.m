@@ -237,7 +237,7 @@ static NSString* const kCellID = @"collectionCell";
  */
 - (void)configureCell:(ThumbCell*)cell atIndexPath:(NSIndexPath *)indexPath {
     Photo* imageInfo = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    [cell.imageView setImageWithURL:_largeThumbsLayout? [[NetworkManager sharedManager] largeThumbURLForImageInfo:imageInfo] : [[NetworkManager sharedManager] thumbURLForImageInfo:imageInfo]];
+    [cell.imageView setCroppedImageWithURL:[[NetworkManager sharedManager] urlForImageInfo:imageInfo]];
     cell.titleView.hidden = !_largeThumbsLayout;
     cell.titleView.text = imageInfo.title;
 }

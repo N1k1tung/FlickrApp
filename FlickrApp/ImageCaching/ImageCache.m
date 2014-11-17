@@ -8,10 +8,11 @@
 
 #import "ImageCache.h"
 #import "SDWebImageDecoder.h"
+#import "Configuration.h"
+#import "UIImage+FaceDetection.h"
 
 
-// TODO: configuration
-#define IMAGES_DIR	@"images"
+#define IMAGES_DIR	[Configuration imagesDir]
 
 @interface ImageCache ()
 
@@ -47,39 +48,57 @@
 
 #pragma mark - interface
 
-- (void)cachedImageForURL:(NSURL*)imageURL onSuccess:(ImageProcessBlock)onSuccess onFail:(OnFailBlock)onFail useMemoryCache:(BOOL)useMemoryCache
+- (void)cachedImageForURL:(NSURL*)imageURL onSuccess:(ImageProcessBlock)onSuccess onFail:(OnFailBlock)onFail useMemoryCache:(BOOL)useMemoryCache cropToSize:(CGSize)size
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         NSString* cachePath = [self cachePathForURLString:imageURL.absoluteString];
+        NSString* processedFilePath = [[[cachePath stringByDeletingPathExtension] stringByAppendingFormat:@"_%d_%d", (int)size.width, (int)size.height] stringByAppendingPathExtension:@"jpg"];
         UIImage* cachedImage = nil;
-        if ((cachedImage = [self cachedImageForPath:cachePath useMemoryCache:useMemoryCache])) {
+        if ((cachedImage = [self cachedImageForPath:CGSizeEqualToSize(size, CGSizeZero)? cachePath : processedFilePath useMemoryCache:useMemoryCache])) {
             if (onSuccess)
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     onSuccess(cachedImage);
                 });
-        } else
-            if (onFail)
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    onFail();
-                });
+        } else {
+            if (CGSizeEqualToSize(size, CGSizeZero)) {
+                if (onFail)
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        onFail();
+                    });
+            } else // check if original is already in cache
+            {
+                if ((cachedImage = [self cachedImageForPath:cachePath useMemoryCache:useMemoryCache])) {
+                    if (onSuccess)
+                        dispatch_sync(dispatch_get_main_queue(), ^{
+                            onSuccess(cachedImage);
+                        });
+                } else {
+                    if (onFail)
+                        dispatch_sync(dispatch_get_main_queue(), ^{
+                            onFail();
+                        });
+                }
+            }
+            
+        }
     });
 }
 
-- (void)cachedImageForURL:(NSURL*)imageURL onSuccess:(ImageProcessBlock)onSuccess onFail:(OnFailBlock)onFail
+- (UIImage*)cacheImage:(UIImage*)image forURL:(NSURL*)URL cacheToMemory:(BOOL)cacheToMemory cropToSize:(CGSize)size
 {
-    [self cachedImageForURL:imageURL onSuccess:onSuccess onFail:onFail useMemoryCache:YES];
-}
-
-- (void)cacheImage:(UIImage*)image forURL:(NSURL*)URL cacheToMemory:(BOOL)cacheToMemory
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [self cacheImage:image forURLString:URL.absoluteString cacheToMemory:cacheToMemory];
-    });
-}
-
-- (void)cacheImage:(UIImage*)image forURL:(NSURL *)URL
-{
-    [self cacheImage:image forURL:URL cacheToMemory:YES];
+    NSString* filePath = [self cachePathForURLString:URL.absoluteString];
+    if (!CGSizeEqualToSize(size, CGSizeZero)) {
+        UIImage* processedImage = [image croppedToSize:size aroundLargestFaceWithAccuracy:CIDetectorAccuracyHigh];
+        NSString* processedFilePath = [[[filePath stringByDeletingPathExtension] stringByAppendingFormat:@"_%d_%d", (int)size.width, (int)size.height] stringByAppendingPathExtension:@"jpg"];
+        [self cacheImage:processedImage forFilePath:processedFilePath cacheToMemory:cacheToMemory];
+        
+        // don't cache the original in mem
+        [self cacheImage:image forFilePath:filePath cacheToMemory:NO];
+        return processedImage;
+    }
+    
+    [self cacheImage:image forFilePath:filePath cacheToMemory:cacheToMemory];
+    return image;
 }
 
 #pragma mark - init & clean cache
@@ -124,10 +143,9 @@
     return [_cachesDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@/%@.jpg", IMAGES_DIR, fileName]];
 }
 
-- (void)cacheImage:(UIImage*)image forURLString:(NSString*)urlString cacheToMemory:(BOOL)cacheToMemory {
-    if (urlString.length)
+- (void)cacheImage:(UIImage*)image forFilePath:(NSString*)filePath cacheToMemory:(BOOL)cacheToMemory {
+    if (filePath.length)
     {
-        NSString* filePath = [self cachePathForURLString:urlString];
         if (cacheToMemory)
             [self memCacheImage:image forPath:filePath];
         if (self.diskCachingEnabled)

@@ -23,6 +23,12 @@
 - (void)setImageWithURL:(NSURL*)imageURL;
 
 /*!
+ @param imageURL the image URL
+ @discussion sets the image, crops to the view bounds preserving aspect, caches both images
+ */
+- (void)setCroppedImageWithURL:(NSURL*)imageURL;
+
+/*!
  @discussion default YES; avoid stockpiling large images in memory though
  */
 @property (nonatomic, assign) BOOL useMemoryCache;

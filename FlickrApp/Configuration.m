@@ -28,4 +28,8 @@ static NSDictionary* dict = nil;
     return dict[@"flickrEndpoint"];
 }
 
++ (NSString*)imagesDir {
+    return dict[@"imagesDir"];
+}
+
 @end

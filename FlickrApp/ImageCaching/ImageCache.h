@@ -11,13 +11,22 @@
 typedef void (^ImageProcessBlock)(UIImage* cachedImage);
 typedef void (^OnFailBlock)();
 
+/*!
+ @class ImageCache
+ @author Nikita Rodin
+ @discussion fascilitates image caching (to memory, disk)
+ */
 @interface ImageCache : NSObject
 
 + (instancetype)sharedCache;
 
-- (void)cachedImageForURL:(NSURL*)URL onSuccess:(ImageProcessBlock)onSuccess onFail:(OnFailBlock)onFail useMemoryCache:(BOOL)useMemoryCache;
-- (void)cachedImageForURL:(NSURL*)URL onSuccess:(ImageProcessBlock)onSuccess onFail:(OnFailBlock)onFail;
-- (void)cacheImage:(UIImage*)image forURL:(NSURL*)URL cacheToMemory:(BOOL)cacheToMemory;
-- (void)cacheImage:(UIImage*)image forURL:(NSURL*)URL;
+/*!
+ @discussion size = CGSizeZero => no crop
+ */
+- (void)cachedImageForURL:(NSURL*)URL onSuccess:(ImageProcessBlock)onSuccess onFail:(OnFailBlock)onFail useMemoryCache:(BOOL)useMemoryCache cropToSize:(CGSize)size;
+/*!
+ @return cropped image
+ */
+- (UIImage*)cacheImage:(UIImage*)image forURL:(NSURL*)URL cacheToMemory:(BOOL)cacheToMemory cropToSize:(CGSize)size;
 
 @end

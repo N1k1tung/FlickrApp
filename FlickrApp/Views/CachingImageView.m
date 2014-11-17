@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSURL* url;
 @property (nonatomic, weak) NSURLSessionDataTask* dataTask;
+@property (nonatomic, assign) CGSize cropSize;
 
 @end
 
@@ -32,19 +33,28 @@
 
 #pragma mark - custom set image
 
-- (void)setImageWithURL:(NSURL*)imageURL
+- (void)setImageWithURL:(NSURL*)imageURL cropSize:(CGSize)size
 {
-    [self.dataTask cancel];
-    
+
 	self.image = nil;
 	if (!imageURL)
 		return;
-		
+
+    self.cropSize = size;
+    
 	[[ImageCache sharedCache] cachedImageForURL:imageURL onSuccess:^(UIImage *cachedImage) {
-		self.image = cachedImage;
-	} onFail:^{
-		[self startRequestWithURL:imageURL];
-	} useMemoryCache:_useMemoryCache];
+        self.image = cachedImage;
+    } onFail:^{
+        [self startRequestWithURL:imageURL];
+    } useMemoryCache:_useMemoryCache cropToSize:size];
+}
+
+- (void)setImageWithURL:(NSURL*)imageURL {
+    [self setImageWithURL:imageURL cropSize:CGSizeZero];
+}
+
+- (void)setCroppedImageWithURL:(NSURL*)imageURL {
+    [self setImageWithURL:imageURL cropSize:self.bounds.size];
 }
 
 - (void)startRequestWithURL:(NSURL*)imageURL
@@ -53,7 +63,7 @@
 	self.dataTask = [[NetworkManager sharedManager] requestImageWithURL:imageURL onSuccess:^(NSData *data) {
         UIImage *image = [UIImage imageWithData:data];
         if (image)
-            [[ImageCache sharedCache] cacheImage:image forURL:_url cacheToMemory:_useMemoryCache];
+            image = [[ImageCache sharedCache] cacheImage:image forURL:_url cacheToMemory:_useMemoryCache cropToSize:_cropSize];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             self.image = image;
